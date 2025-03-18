@@ -1,0 +1,49 @@
+{
+    "name": "opgg/laravel-essentials-entry",
+    "description": "Essential Laravel modules collection for Entry team",
+    "type": "library",
+    "license": "MIT",
+    "require": {
+        "php": "^8.4",
+        "illuminate/config": "^10.0|^11.0|^12.0",
+        "illuminate/support": "^10.0|^11.0|^12.0",
+        "illuminate/contracts": "^10.0|^11.0|^12.0",
+        "illuminate/console": "^10.0|^11.0|^12.0",
+        "illuminate/http": "^10.0|^11.0|^12.0",
+        "butschster/meta-tags": "^2.0",
+        "codezero/laravel-localized-routes": "^3.0",
+        "kargnas/laravel-ai-translator": "*",
+        "spatie/laravel-sitemap": "^6.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "OPGG\\LaravelEssentialsEntry\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "OPGG\\LaravelEssentialsEntry\\Tests\\": "tests/"
+        }
+    },
+    "require-dev": {
+        "orchestra/testbench": "^8.0|^9.0",
+        "phpunit/phpunit": "^10.0|^11.0"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "OPGG\\LaravelEssentialsEntry\\LaravelEssentialsEntryServiceProvider"
+            ],
+            "aliases": {
+                "JsonLd": "OPGG\\LaravelEssentialsEntry\\Facades\\JsonLd"
+            }
+        }
+    },
+    "minimum-stability": "stable",
+    "config": {
+        "allow-plugins": {
+            "codezero/composer-preload-files": true,
+            "php-http/discovery": true
+        }
+    }
+}
