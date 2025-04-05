@@ -3,6 +3,7 @@ This package is a collection of frequently used Laravel packages for our company
 Laravel
 - Add `use` statements for all Facade classes to call them more concisely.
 - Use Facade classes or original Laravel classes in all files instead of helper functions.
+- Create new class and refactor if the file is getting too long. (more than 300 lines)
 
 Features
 - When generating static files like `sitemap.xml` or `robots.txt`, save them to Cache and load them from there.
