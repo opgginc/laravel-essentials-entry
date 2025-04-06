@@ -27,18 +27,14 @@ return [
         'path_rewrite' => '/sitemap.xml',
         'cache_key' => 'essentials-entry.sitemap.xml',
         'generator' => function ($sitemap, $applyLocales) {
-            // 여기서 사이트맵을 직접 구성합니다.
-            // 기본 경로 추가 예시:
-            $sitemap->add('/') // 홈페이지
-                ->add('/about') // 소개 페이지
-                ->add('/contact');
+            $sitemap->add('/');
 
             // 언어별 경로 적용하기 - codezero-be/laravel-localized-routes 활용
             // $applyLocales는 route() 함수를 통해 다국어 URL 생성
             $applyLocales(function ($locale, $addUrlFromRoute) {
                 // 라우트 이름과 파라미터를 활용한 URL 생성 예시
-                $addUrlFromRoute('user.profile', ['id' => 1]);
-                $addUrlFromRoute('products.show', ['product' => 'sample-product']);
+                // $addUrlFromRoute('user.profile', ['id' => 1]);
+                // $addUrlFromRoute('products.show', ['product' => 'sample-product']);
             });
 
             return $sitemap;
@@ -82,6 +78,36 @@ return [
     |--------------------------------------------------------------------------
     | Language Detection Configuration
     |--------------------------------------------------------------------------
+    |
+    | 이 설정은 opgginc/codezero-laravel-localized-routes 패키지를 사용하여 URL 경로에
+    | 언어 코드를 포함하고 자동으로 언어를 감지합니다.
+    |
+    | 1. 미들웨어 등록 (bootstrap/app.php):
+    | return Application::configure(basePath: dirname(__DIR__))
+    |     ->withMiddleware(function (Middleware $middleware) {
+    |         $middleware->web(remove: [
+    |             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+    |         ]);
+    |         $middleware->web(append: [
+    |             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+    |             \OPGG\LaravelEssentialsEntry\Http\Middleware\DetectLanguage::class,
+    |         ]);
+    |     })
+    |     ->create();
+    |
+    | 언어 감지 미들웨어는 SubstituteBindings 미들웨어 뒤에 배치해야 합니다.
+    |
+    | 2. 라우트 설정:
+    | Route::localized(function () {
+    |     Route::get('/', 'HomeController@index');
+    | });
+    |
+    | 결과 URL 예시:
+    | - /en/about      (영어)
+    | - /ko_KR/about   (한국어)
+    | - /zh_CN/about   (중국어)
+    | - /about        (기본 언어일 경우)
+    |
     */
     'language' => [
         'enabled' => true,

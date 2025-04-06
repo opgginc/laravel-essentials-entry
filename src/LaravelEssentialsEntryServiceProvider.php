@@ -67,9 +67,6 @@ class LaravelEssentialsEntryServiceProvider extends ServiceProvider
             __DIR__ . '/../config/essentials-entry.php' => $this->app->configPath('essentials-entry.php'),
         ], 'essentials-entry-config');
 
-        // 미들웨어 등록
-        $this->app['router']->aliasMiddleware('detect-language', DetectLanguage::class);
-
         // 사이트맵 라우트 등록
         $this->registerSitemapRoutes();
 

@@ -53,3 +53,8 @@ This package is a collection of frequently used Laravel packages for our company
 - Usage:
   - `Annexare\Countries::languagesAll()` for languages (`en`, `ko`, `zh`, `es`)
   - `Annexare\Countries::countries()` for countries (`US`, `KR`, `CN`, `ES`)
+
+### Localized Routes
+
+- Package: `opgginc/codezero-laravel-localized-routes`
+- This package used `opgginc/codezero-laravel-localized-routes` instead of `codezero/laravel-localized-routes`.
