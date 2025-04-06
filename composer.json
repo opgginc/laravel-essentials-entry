@@ -4,16 +4,18 @@
     "type": "library",
     "license": "MIT",
     "require": {
-        "php": "^8.4",
-        "illuminate/config": "^10.0|^11.0|^12.0",
-        "illuminate/support": "^10.0|^11.0|^12.0",
-        "illuminate/contracts": "^10.0|^11.0|^12.0",
-        "illuminate/console": "^10.0|^11.0|^12.0",
-        "illuminate/http": "^10.0|^11.0|^12.0",
-        "butschster/meta-tags": "^2.0",
-        "codezero/laravel-localized-routes": "^3.0",
+        "php": "^8.3|^8.4",
+        "illuminate/config": "^11.0|^12.0",
+        "illuminate/support": "^11.0|^12.0",
+        "illuminate/contracts": "^11.0|^12.0",
+        "illuminate/console": "^11.0|^12.0",
+        "illuminate/http": "^11.0|^12.0",
+        "butschster/meta-tags": "^3.0",
         "kargnas/laravel-ai-translator": "*",
-        "spatie/laravel-sitemap": "^6.0"
+        "spatie/laravel-sitemap": "^7.0",
+        "opgginc/codezero-laravel-localized-routes": "^5.0",
+        "annexare/countries-list": "^3.1",
+        "nesbot/carbon": "^3.9"
     },
     "autoload": {
         "psr-4": {
@@ -38,6 +40,10 @@
                 "JsonLd": "OPGG\\LaravelEssentialsEntry\\Facades\\JsonLd"
             }
         }
+    },
+    "scripts": {
+        "test": "./vendor/bin/phpunit",
+        "test-coverage": "XDEBUG_MODE=coverage ./vendor/bin/phpunit --coverage-html coverage"
     },
     "minimum-stability": "stable",
     "config": {

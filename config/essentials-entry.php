@@ -1,34 +1,48 @@
 <?php
 
-use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Storage;
-
 return [
+    /*
+    |--------------------------------------------------------------------------
+    | Favicon Configuration
+    |--------------------------------------------------------------------------
+    */
+    'favicon' => [
+        'enabled' => true,
+        'source_path' => null, // null이면 패키지 내부 파비콘 사용
+        'path_rewrite' => '/favicon.ico',
+        'cache' => [
+            'enabled' => true,
+            'duration' => 31536000, // 1년
+        ],
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | Sitemap Configuration
     |--------------------------------------------------------------------------
     */
     'sitemap' => [
-        'enabled' => Config::get('app.sitemap_enabled', true),
-        'path' => Storage::path('public/sitemap.xml'),
-        'schedule' => Config::get('app.sitemap_schedule', 60),
-        'domain' => Config::get('app.url', 'http://localhost'),
-        'routes' => [
-            '/',
-            '/about',
-            '/contact',
-        ],
-        'defaults' => [
-            'changefreq' => 'daily',
-            'priority' => 0.8,
-            'lastmod' => null,
-        ],
-        'exclude' => [
-            '/admin/*',
-            '/api/*',
-        ],
+        'enabled' => true,
+        'schedule' => 60,
+        'path_rewrite' => '/sitemap.xml',
+        'cache_key' => 'essentials-entry.sitemap.xml',
+        'generator' => function ($sitemap, $applyLocales) {
+            // 여기서 사이트맵을 직접 구성합니다.
+            // 기본 경로 추가 예시:
+            $sitemap->add('/') // 홈페이지
+                ->add('/about') // 소개 페이지
+                ->add('/contact');
+
+            // 언어별 경로 적용하기 - codezero-be/laravel-localized-routes 활용
+            // $applyLocales는 route() 함수를 통해 다국어 URL 생성
+            $applyLocales(function ($locale, $addUrlFromRoute) {
+                // 라우트 이름과 파라미터를 활용한 URL 생성 예시
+                $addUrlFromRoute('user.profile', ['id' => 1]);
+                $addUrlFromRoute('products.show', ['product' => 'sample-product']);
+            });
+
+            return $sitemap;
+        },
     ],
 
     /*
@@ -60,7 +74,6 @@ return [
             'duration' => Config::get('app.meta_tags_cache_duration', 3600),
         ],
         'images' => [
-            'favicon' => '/favicon.ico',
             'touch_icon' => '/apple-touch-icon.png',
         ],
     ],
@@ -74,36 +87,16 @@ return [
         'enabled' => true,
         'default' => 'en',
         'supported' => [
-            'en' => 'English',
-            'ko' => 'Korean',
-            'ja' => 'Japanese',
-            'zh' => 'Chinese',
-            'es' => 'Spanish',
-        ],
-        'detect_from' => [
-            'cookie',
-            'browser',
-            'subdomain',
-            'path',
+            'en',
+            'ko_KR',
+            'zh_CN',
+            'zh_TW',
+            'zh_HK',
+            'es_ES',
         ],
         'cookie' => [
-            'name' => 'locale',
-            'duration' => 43200, // 30 days
-        ],
-        'carbon_mapping' => [
-            'ko_KR' => 'ko',
-            'ja_JP' => 'ja',
-            'zh_CN' => 'zh',
-            'zh_TW' => 'zh',
-            'es_ES' => 'es',
-            'en' => 'en',
-        ],
-        'locale_mapping' => [
-            'ko' => 'ko_KR',
-            'ja' => 'ja_JP',
-            'zh' => 'zh_CN',
-            'es' => 'es_ES',
-            'en' => 'en',
+            'name' => '_ol',
+            'minutes' => 60 * 24 * 365, // 1 year
         ],
     ],
 ];
