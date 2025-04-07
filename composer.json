@@ -1,5 +1,5 @@
 {
-    "name": "opgg/laravel-essentials-entry",
+    "name": "opgginc/laravel-essentials-entry",
     "description": "Essential Laravel modules collection for Entry team",
     "type": "library",
     "license": "MIT",
@@ -29,7 +29,8 @@
     },
     "require-dev": {
         "orchestra/testbench": "^8.0|^9.0",
-        "phpunit/phpunit": "^10.0|^11.0"
+        "phpunit/phpunit": "^10.0|^11.0",
+        "pestphp/pest": "^3.8"
     },
     "extra": {
         "laravel": {
@@ -49,7 +50,8 @@
     "config": {
         "allow-plugins": {
             "codezero/composer-preload-files": true,
-            "php-http/discovery": true
+            "php-http/discovery": true,
+            "pestphp/pest-plugin": true
         }
     }
 }

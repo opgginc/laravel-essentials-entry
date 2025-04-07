@@ -1,13 +1,22 @@
 This package is a collection of frequently used Laravel packages for our company's projects, bundled together for easy use, updates, and management.
 
-Laravel
+## Laravel Package Development Guideline
+
 - Add `use` statements for all Facade classes to call them more concisely.
 - Use Facade classes or original Laravel classes in all files instead of helper functions.
+- Create new class and refactor if the file is getting too long. (more than 300 lines)
+- Use `env()` instead of `Config` facade in config file. (`/config/essentials-entry.php`)
+  - They don't support most classes in Laravel.
+  - They support some of helpers: `storage_path()`, `resource_path()`, `env()`
+  - They support some classes: `Illuminate\Support\Str`
+- After every modification of `/config/essentials-entry.php`, check and modify `ConfigValidator`.
 
-Features
+## Features
+
 - When generating static files like `sitemap.xml` or `robots.txt`, save them to Cache and load them from there.
 
-Documentation Guidelines
+## Documentation Guidelines
+
 - Document all public methods and classes with PHPDoc annotations.
 - Include `@param`, `@return`, and `@throws` tags for all methods.
 - Include examples of usage for complex methods.
@@ -23,3 +32,30 @@ Documentation Guidelines
 - Maintain a FAQ section in the documentation for common issues.
 - Document how the package integrates with Laravel's existing features.
 - All the comments and documents should be written in Korean.
+- Never numbering comments. For example, write `// Text` instead of `// 1. Text`.
+
+## Laravel packages
+
+### MetaTags Generator
+
+- Docs: https://github.com/butschster/LaravelMetaTags
+- Service Provider: `MetaTagsServiceProvider`
+
+### Sitemap Generator
+
+- Docs: https://github.com/spatie/laravel-sitemap
+- Command: `php artisan sitemap:generate`
+- Controllers: `SitemapController`
+
+### Country List
+
+- Package: `annexare/countries-list`
+- Don't hard-code country names in the code. Use this package instead.
+- Usage:
+  - `Annexare\Countries::languagesAll()` for languages (`en`, `ko`, `zh`, `es`)
+  - `Annexare\Countries::countries()` for countries (`US`, `KR`, `CN`, `ES`)
+
+### Localized Routes
+
+- Package: `opgginc/codezero-laravel-localized-routes`
+- This package used `opgginc/codezero-laravel-localized-routes` instead of `codezero/laravel-localized-routes`.

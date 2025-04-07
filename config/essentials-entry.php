@@ -9,7 +9,7 @@ return [
     'favicon' => [
         'enabled' => true,
         'source_path' => null, // null이면 패키지 내부 파비콘 사용
-        'path_rewrite' => '/favicon.ico',
+        'path_rewrite' => 'favicon.ico',
         'cache' => [
             'enabled' => true,
             'duration' => 31536000, // 1년
@@ -24,7 +24,7 @@ return [
     'sitemap' => [
         'enabled' => true,
         'schedule' => 60,
-        'path_rewrite' => '/sitemap.xml',
+        'path_rewrite' => 'sitemap.xml',
         'cache_key' => 'essentials-entry.sitemap.xml',
         'generator' => function ($sitemap, $applyLocales) {
             $sitemap->add('/');
@@ -39,39 +39,6 @@ return [
 
             return $sitemap;
         },
-    ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | Meta Tags Configuration
-    |--------------------------------------------------------------------------
-    */
-    'meta-tags' => [
-        'defaults' => [
-            'title' => Config::get('app.name', 'Laravel'),
-            'description' => '',
-            'keywords' => '',
-            'robots' => 'index,follow',
-            'viewport' => 'width=device-width, initial-scale=1',
-            'charset' => 'utf-8',
-        ],
-        'og' => [
-            'site_name' => Config::get('app.name', 'Laravel'),
-            'type' => 'website',
-            'image' => '/images/og-image.jpg',
-        ],
-        'twitter' => [
-            'card' => 'summary_large_image',
-            'site' => '@yoursite',
-            'creator' => '@yourname',
-        ],
-        'cache' => [
-            'enabled' => Config::get('app.meta_tags_cache_enabled', true),
-            'duration' => Config::get('app.meta_tags_cache_duration', 3600),
-        ],
-        'images' => [
-            'touch_icon' => '/apple-touch-icon.png',
-        ],
     ],
 
     /*
@@ -111,18 +78,60 @@ return [
     */
     'language' => [
         'enabled' => true,
-        'default' => 'en',
+        'default' => env('APP_LOCALE'),
+        // 지원 언어 목록 (순서가 중요: 같은 기본 언어에 대해 먼저 나열된 항목이 우선순위가 높음)
+        // 예: 'zh'를 감지하면 아래 순서대로 'zh_CN'이 'zh_TW'나 'zh_HK'보다 우선 적용됨
         'supported' => [
             'en',
-            'ko_KR',
-            'zh_CN',
-            'zh_TW',
-            'zh_HK',
             'es_ES',
+            'zh_CN',  // 중국어 간체 우선
+            'zh_TW',  // 번체 (대만)
+            // 'zh_HK',  // 번체 (홍콩)
+            'ja_JP',
+            'ko_KR',
         ],
         'cookie' => [
             'name' => '_ol',
             'minutes' => 60 * 24 * 365, // 1 year
+        ],
+        // 특별 매핑 관계 (서로 대체 가능한 언어들)
+        'locale_mappings' => [
+            // 번체 중국어 상호 참조 (zh_HK와 zh_TW는 모두 번체 중국어라 서로 대체 가능)
+            'zh_HK' => 'zh_TW',
+            'zh_TW' => 'zh_HK',
+        ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Meta Tags Configuration
+    |--------------------------------------------------------------------------
+    */
+    'meta-tags' => [
+        'defaults' => [
+            'title' => Config::get('app.name', 'Laravel'),
+            'description' => '',
+            'keywords' => '',
+            'robots' => 'index,follow',
+            'viewport' => 'width=device-width, initial-scale=1',
+            'charset' => 'utf-8',
+        ],
+        'og' => [
+            'site_name' => Config::get('app.name', 'Laravel'),
+            'type' => 'website',
+            'image' => '/images/og-image.jpg',
+        ],
+        'twitter' => [
+            'card' => 'summary_large_image',
+            'site' => '@yoursite',
+            'creator' => '@yourname',
+        ],
+        'cache' => [
+            'enabled' => Config::get('app.meta_tags_cache_enabled', true),
+            'duration' => Config::get('app.meta_tags_cache_duration', 3600),
+        ],
+        'images' => [
+            'touch_icon' => '/apple-touch-icon.png',
         ],
     ],
 ];

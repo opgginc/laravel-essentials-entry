@@ -32,6 +32,8 @@ This package is a collection of frequently used Laravel packages for our company
 - Maintain a FAQ section in the documentation for common issues.
 - Document how the package integrates with Laravel's existing features.
 - All the comments and documents should be written in Korean.
+- Never numbering comments. For example, write `// Text` instead of `// 1. Text`.
+- 모든 한국어 주석은 간결하고 짧게 쓴다. (예: `~했습니다.`, `~용 입니다.` 대신, `~음`, `~용`)
 
 ## Laravel packages
 

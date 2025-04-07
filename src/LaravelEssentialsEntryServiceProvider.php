@@ -2,17 +2,18 @@
 
 namespace OPGG\LaravelEssentialsEntry;
 
+use CodeZero\LocalizedRoutes\LocalizedRoutesServiceProvider;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Route;
-use OPGG\LaravelEssentialsEntry\Config\ConfigValidator;
 use OPGG\LaravelEssentialsEntry\Console\Commands\GenerateRobots;
 use OPGG\LaravelEssentialsEntry\Console\Commands\GenerateSitemap;
 use OPGG\LaravelEssentialsEntry\Http\Controllers\FaviconController;
 use OPGG\LaravelEssentialsEntry\Http\Controllers\SitemapController;
 use OPGG\LaravelEssentialsEntry\Http\Middleware\DetectLanguage;
 use OPGG\LaravelEssentialsEntry\Providers\MetaTagsServiceProvider;
+use OPGG\LaravelEssentialsEntry\Support\EssentialsEntry;
 use Illuminate\Console\Scheduling\Schedule;
 
 class LaravelEssentialsEntryServiceProvider extends ServiceProvider
@@ -22,6 +23,12 @@ class LaravelEssentialsEntryServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+        // Config 파일 등록
+        $this->mergeConfigFrom(
+            __DIR__ . '/../config/essentials-entry.php',
+            'essentials-entry'
+        );
+
         // localized-routes.php 파일 존재 여부 확인
         if (file_exists(config_path('localized-routes.php'))) {
             $this->app['log']->warning(
@@ -30,21 +37,8 @@ class LaravelEssentialsEntryServiceProvider extends ServiceProvider
             );
         }
 
-        // Config 파일 등록
-        $this->mergeConfigFrom(
-            __DIR__ . '/../config/essentials-entry.php',
-            'essentials-entry'
-        );
-
-        // 설정 유효성 검사
-        try {
-            ConfigValidator::validate();
-        } catch (\InvalidArgumentException $e) {
-            // 개발 환경에서만 예외 발생
-            if (Config::get('app.debug')) {
-                throw $e;
-            }
-        }
+        // codezero-laravel-localized-routes 설정 등록
+        static::overrideLocalizationConfig();
 
         // 메타 태그 서비스 프로바이더 등록
         $this->app->register(MetaTagsServiceProvider::class);
@@ -53,6 +47,11 @@ class LaravelEssentialsEntryServiceProvider extends ServiceProvider
         $this->app->bind('essentials-entry.json-ld', function () {
             return new \OPGG\LaravelEssentialsEntry\Schema\JsonLd('WebSite');
         });
+        
+        // EssentialsEntry 서비스 등록
+        $this->app->singleton('essentials-entry', function () {
+            return new EssentialsEntry();
+        });
     }
 
     /**
@@ -60,8 +59,6 @@ class LaravelEssentialsEntryServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // codezero-laravel-localized-routes 설정 덮어쓰기
-        $this->overrideLocalizationConfig();
         // Config 파일 publish
         $this->publishes([
             __DIR__ . '/../config/essentials-entry.php' => $this->app->configPath('essentials-entry.php'),
@@ -84,7 +81,6 @@ class LaravelEssentialsEntryServiceProvider extends ServiceProvider
             $this->app->booted(function () {
                 $schedule = $this->app->make(Schedule::class);
                 $config = Config::get('essentials-entry.sitemap');
-
                 if ($config['enabled']) {
                     $schedule->command('essentials:generate-sitemap')
                         ->cron("*/{$config['schedule']} * * * *");
@@ -101,9 +97,9 @@ class LaravelEssentialsEntryServiceProvider extends ServiceProvider
      */
     protected function registerSitemapRoutes(): void
     {
-        $config = config('essentials-entry.sitemap');
+        $config = Config::get('essentials-entry.sitemap', []);
 
-        if ($config['enabled']) {
+        if (!empty($config['enabled']) && !empty($config['path_rewrite'])) {
             Route::get($config['path_rewrite'], [SitemapController::class, 'index']);
         }
     }
@@ -113,9 +109,9 @@ class LaravelEssentialsEntryServiceProvider extends ServiceProvider
      */
     protected function registerFaviconRoute(): void
     {
-        $config = config('essentials-entry.favicon');
+        $config = Config::get('essentials-entry.favicon', []);
 
-        if ($config['enabled']) {
+        if (!empty($config['enabled']) && !empty($config['path_rewrite'])) {
             Route::get($config['path_rewrite'], [FaviconController::class, 'index']);
         }
     }
@@ -123,7 +119,7 @@ class LaravelEssentialsEntryServiceProvider extends ServiceProvider
     /**
      * codezero-laravel-localized-routes 설정 덮어쓰기
      */
-    protected function overrideLocalizationConfig(): void
+    public static function overrideLocalizationConfig(): void
     {
         $config = Config::get('essentials-entry.language');
         if (!$config['enabled']) {
@@ -135,18 +131,18 @@ class LaravelEssentialsEntryServiceProvider extends ServiceProvider
             // 우선순위를 유지하면서 중복 제거
             // $detectionMethods = array_values(array_unique($config['detect_from']));
 
-            Config::set('localized-routes.supported_locales', array_keys($config['supported']));
+            Config::set('localized-routes.supported_locales', ($config['supported']));
             Config::set('localized-routes.fallback_locale', $config['default']);
             Config::set('localized-routes.omitted_locale', $config['default']);
-            Config::set('localized-routes.redirect_to_localized_urls', true);
+            // Config::set('localized-routes.redirect_to_localized_urls', true);
             Config::set('localized-routes.detectors', [
                 \CodeZero\LocalizedRoutes\Middleware\Detectors\RouteActionDetector::class, //=> required for scoped config
                 \CodeZero\LocalizedRoutes\Middleware\Detectors\UrlDetector::class, //=> required
                 \CodeZero\LocalizedRoutes\Middleware\Detectors\OmittedLocaleDetector::class, //=> required for omitted locale
-                \CodeZero\LocalizedRoutes\Middleware\Detectors\UserDetector::class,
+                // \CodeZero\LocalizedRoutes\Middleware\Detectors\UserDetector::class,
                 // \CodeZero\LocalizedRoutes\Middleware\Detectors\SessionDetector::class,
                 // \CodeZero\LocalizedRoutes\Middleware\Detectors\CookieDetector::class,
-                \CodeZero\LocalizedRoutes\Middleware\Detectors\BrowserDetector::class,
+                // \CodeZero\LocalizedRoutes\Middleware\Detectors\BrowserDetector::class,
                 \CodeZero\LocalizedRoutes\Middleware\Detectors\AppDetector::class, //=> required
             ]);
             Config::set('localized-routes.cookie_name', $config['cookie']['name']);

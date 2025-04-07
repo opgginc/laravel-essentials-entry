@@ -10,7 +10,7 @@ Essential Laravel modules collection for Entry team.
 ## Installation
 
 ```bash
-composer require opgg/laravel-essentials-entry
+composer require opgginc/laravel-essentials-entry
 ```
 
 설정 파일을 게시하려면:
