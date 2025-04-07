@@ -62,42 +62,7 @@ php artisan essentials:generate-sitemap
 ],
 ```
 
-### 2. 메타 태그 관리
-
-Inertia.js와 통합된 메타 태그 관리 기능을 제공합니다.
-
-#### 설정
-
-`config/essentials-entry.php` 파일에서 메타 태그 설정을 변경할 수 있습니다:
-
-```php
-'meta-tags' => [
-    'defaults' => [
-        'title' => Config::get('app.name', 'Laravel'),
-        'description' => '',
-        'keywords' => '',
-        'robots' => 'index,follow',
-        'viewport' => 'width=device-width, initial-scale=1',
-        'charset' => 'utf-8',
-    ],
-    'og' => [
-        'site_name' => Config::get('app.name', 'Laravel'),
-        'type' => 'website',
-        'image' => '/images/og-image.jpg',
-    ],
-    // ...
-],
-```
-
-#### 사용법
-
-블레이드 템플릿에서:
-
-```php
-{!! preg_replace('/<title>(.*?)<\/title>/', '<title inertia>$1</title>', Meta::toHtml()) !!}
-```
-
-### 3. 다국어 URL 설정
+### 2. 사이트 언어 관리 (다국어 URL 설정)
 
 [opgginc/codezero-laravel-localized-routes](https://github.com/opgginc/codezero-laravel-localized-routes) 패키지를 사용하여 URL 경로에 언어 코드를 포함하고 자동으로 언어를 감지합니다. 이 패키지는 `codezero/laravel-localized-routes`의 포크 버전으로, 원본 패키지의 관리자 사망으로 인해 유지보수가 중단된 후 자체적으로 관리하고 있는 버전입니다.
 
@@ -147,17 +112,27 @@ Route::localized(function () {
 ```php
 'language' => [
     'enabled' => true,
-    'default' => 'en',      // 기본 언어 (이 언어는 URL에 표시되지 않음)
-    'supported' => [        // 지원하는 언어 목록
+    'default' => env('APP_LOCALE'),  // 기본 언어 (이 언어는 URL에 표시되지 않음)
+    // 지원 언어 목록 (순서가 중요: 같은 기본 언어에 대해 먼저 나열된 항목이 우선순위가 높음)
+    // 예: 'zh'를 감지하면 아래 순서대로 'zh_CN'이 'zh_TW'나 'zh_HK'보다 우선 적용됨
+    'supported' => [
         'en',
-        'ko_KR',
-        'zh_CN',
-        'zh_TW',
         'es_ES',
+        'zh_CN',  // 중국어 간체 우선
+        'zh_TW',  // 번체 (대만)
+        // 'zh_HK',  // 번체 (홍콩)
+        'ja_JP',
+        'ko_KR',
     ],
     'cookie' => [           // 사용자 언어 설정 저장용 쿠키
         'name' => '_ol',
         'minutes' => 60 * 24 * 365, // 1년
+    ],
+    // 특별 매핑 관계 (서로 대체 가능한 언어들)
+    'locale_mappings' => [
+        // 번체 중국어 상호 참조 (zh_HK와 zh_TW는 모두 번체 중국어라 서로 대체 가능)
+        'zh_HK' => 'zh_TW',
+        'zh_TW' => 'zh_HK',
     ],
 ],
 ```
@@ -180,54 +155,12 @@ Route::localized(function () {
 $url = route('users.show', ['id' => 1, 'locale' => 'ko_KR']); // /ko_KR/users/1
 ```
 
-### 4. 캐시 관리
-
-메타 태그와 사이트맵에 대한 캐시 관리 기능을 제공합니다.
-
-```php
-'cache' => [
-    'enabled' => Config::get('app.meta_tags_cache_enabled', true),
-    'duration' => Config::get('app.meta_tags_cache_duration', 3600), // 초 단위
-],
-```
-
-### 5. 로봇 차단 파일(robots.txt) 생성
+### 3. 로봇 차단 파일(robots.txt) 생성
 
 사이트맵과 함께 robots.txt 파일도 자동으로 생성할 수 있습니다.
 
 ```bash
 php artisan essentials:generate-robots
-```
-
-### 6. JSON-LD 스키마 지원
-
-구조화된 데이터를 위한 JSON-LD 스키마를 추가할 수 있습니다.
-
-```php
-use OPGG\LaravelEssentialsEntry\Schema\JsonLd;
-
-// 제품 스키마 생성
-$schema = JsonLd::product()
-    ->name('제품명')
-    ->description('제품 설명')
-    ->price(10000)
-    ->priceCurrency('KRW')
-    ->toScript();
-
-// 블레이드 템플릿에서 출력
-{!! $schema !!}
-```
-
-### 7. 다국어 URL 관리
-
-다국어 URL 구조를 관리할 수 있습니다.
-
-```php
-// routes/web.php
-Route::localized(function () {
-    Route::get('/', 'HomeController@index')->name('home');
-    Route::get('/about', 'AboutController@index')->name('about');
-});
 ```
 
 ## 테스트
@@ -236,9 +169,15 @@ Route::localized(function () {
 composer test
 ```
 
+## TODO LIST
+
+다음 기능들은 향후 구현 예정입니다:
+
+- 메타 태그 관리: Inertia.js와 통합된 메타 태그 관리 기능
+- JSON-LD 스키마 지원: 구조화된 데이터를 위한 JSON-LD 스키마 추가
+
 ## Included Packages
 
-- [butschster/meta-tags](https://github.com/butschster/meta-tags) - Manage meta tags, SEO optimization
 - [opgginc/codezero-laravel-localized-routes](https://github.com/opgginc/codezero-laravel-localized-routes) - Create localized routes in Laravel
 - [kargnas/laravel-ai-translator](https://github.com/kargnas/laravel-ai-translator) - AI-powered translation
 - [spatie/laravel-sitemap](https://github.com/spatie/laravel-sitemap) - Generate sitemaps
