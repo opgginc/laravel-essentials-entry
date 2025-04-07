@@ -231,4 +231,4 @@ composer test
 
 ## License
 
-GPL
+AGPL-3.0-only

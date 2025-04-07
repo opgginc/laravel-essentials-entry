@@ -2,7 +2,7 @@
     "name": "opgginc/laravel-essentials-entry",
     "description": "Essential Laravel modules collection for Entry team",
     "type": "library",
-    "license": "GPL",
+    "license": "AGPL-3.0-only",
     "require": {
         "php": "^8.3|^8.4",
         "illuminate/config": "^11.0|^12.0",
