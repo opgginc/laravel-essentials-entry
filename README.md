@@ -222,6 +222,7 @@ composer test
 
 - 메타 태그 관리: Inertia.js와 통합된 메타 태그 관리 기능
 - JSON-LD 스키마 지원: 구조화된 데이터를 위한 JSON-LD 스키마 추가
+- 변경한 언어코드를 위한 리다이렉트 기능
 
 ## Included Packages
 
