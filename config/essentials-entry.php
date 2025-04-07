@@ -97,6 +97,7 @@ return [
         // 특별 매핑 관계 (서로 대체 가능한 언어들)
         'locale_mappings' => [
             // 번체 중국어 상호 참조 (zh_HK와 zh_TW는 모두 번체 중국어라 서로 대체 가능)
+            // 중국어 홍콩/대만 버전 차이점은 https://kargn.as/posts/differences-hong-kong-taiwan-chinese-website-ui-localisation 참고
             'zh_HK' => 'zh_TW',
             'zh_TW' => 'zh_HK',
         ],
