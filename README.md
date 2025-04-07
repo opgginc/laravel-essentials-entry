@@ -231,4 +231,4 @@ composer test
 
 ## License
 
-MIT
+GPL
