@@ -48,6 +48,7 @@ class DetectLanguage
         $browserLocale = $this->browserDetectedLanguage();
         $cookieLocale = $this->cookieDetectedLanguage();
 
+        // URL로 지정된 언어가 기본 언어가 아닌 경우
         if (!$this->isDefaultLocale($pathLocale)) {
             $this->handler->store($pathLocale);
             $this->setLocale($pathLocale);
@@ -59,11 +60,6 @@ class DetectLanguage
         // 쿠키로 강제 지정 되어 있으면 리다이렉트
         if ($cookieLocale && $cookieLocale !== $pathLocale) {
             return redirect()->to(Route::localizedUrl($cookieLocale));
-        }
-
-        // 브라우저로 자동 디텍트
-        if ($pathLocale !== $browserLocale) {
-            return redirect()->to(Route::localizedUrl($browserLocale));
         }
 
         // 기본 값
