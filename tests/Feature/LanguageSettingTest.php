@@ -15,6 +15,7 @@ class LanguageSettingTest extends TestCase
     {
         parent::setUp();
 
+        $this->setCookieLocale(null);
         $this->setSupportedLocales(['en', 'ko', 'zh-cn', 'zh-tw']);
         $this->setFallbackLocale('en');
     }

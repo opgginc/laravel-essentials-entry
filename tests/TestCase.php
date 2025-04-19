@@ -36,6 +36,7 @@ abstract class TestCase extends BaseTestCase
         $this->cookieName = Config::get('essentials-entry.language.cookie.name');
 
         $this->defineEnvironment(app());
+        $this->disableCookieEncryption();
     }
 
     protected function setAcceptLanguage(string $locale)
@@ -57,8 +58,9 @@ abstract class TestCase extends BaseTestCase
         App::setLocale($locale);
     }
 
-    protected function setCookieLocale(string $locale): void
+    protected function setCookieLocale(?string $locale): void
     {
+        $_COOKIE[$this->cookieName] = $locale;
         $this->defaultCookies[$this->cookieName] = $locale;
     }
 
