@@ -7,6 +7,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Route;
+use OPGG\LaravelEssentialsEntry\Console\Commands\CleanLanguageFilesCommand;
 use OPGG\LaravelEssentialsEntry\Console\Commands\GenerateRobots;
 use OPGG\LaravelEssentialsEntry\Console\Commands\GenerateSitemap;
 use OPGG\LaravelEssentialsEntry\Http\Controllers\FaviconController;
@@ -76,6 +77,7 @@ class LaravelEssentialsEntryServiceProvider extends ServiceProvider
         // 명령어 등록
         if ($this->app->runningInConsole()) {
             $this->commands([
+                CleanLanguageFilesCommand::class,
                 GenerateSitemap::class,
                 GenerateRobots::class,
             ]);
