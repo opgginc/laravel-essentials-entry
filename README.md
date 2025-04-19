@@ -1,6 +1,11 @@
-# Laravel Essentials Entry
+<h1 align="center">Essential Packages for Entry Cell in OP.GG</h1>
 
-Essential Laravel modules collection for Entry team.
+<p align="center">
+<a href="https://github.com/opgginc/laravel-essentials-entry/actions"><img src="https://github.com/opgginc/laravel-essentials-entry/actions/workflows/tests.yml/badge.svg" alt="Build Status"></a>
+<a href="https://packagist.org/packages/opgginc/laravel-essentials-entry"><img src="https://img.shields.io/packagist/dt/opgginc/laravel-essentials-entry" alt="Total Downloads"></a>
+<a href="https://packagist.org/packages/opgginc/laravel-essentials-entry"><img src="https://img.shields.io/packagist/v/opgginc/laravel-essentials-entry" alt="Latest Stable Version"></a>
+<a href="https://packagist.org/packages/opgginc/laravel-essentials-entry"><img src="https://img.shields.io/packagist/l/opgginc/laravel-essentials-entry" alt="License"></a>
+</p>
 
 ## Requirements
 
@@ -143,12 +148,15 @@ Route::localized(function () {
 본 패키지는 다음과 같은 순서와 우선순위로 사용자의 언어를 감지합니다:
 
 1. **URL 경로 분석**: URL 경로에 언어 코드가 포함된 경우 이를 우선 사용
+
    - 예: `/ko_KR/about` 경로에서 `ko_KR` 감지
 
 2. **쿠키 기반 감지**: 이전에 저장된 언어 설정이 있는 경우 해당 언어로 리다이렉트
+
    - 쿠키에 저장된 언어가 URL 경로와 다를 경우 쿠키 값 기준으로 리다이렉트
 
 3. **브라우저 언어 감지**: 사용자 브라우저의 `Accept-Language` 헤더 분석
+
    - 경로에 언어가 없거나 기본 언어일 때 브라우저 언어가 다르면 해당 언어로 리다이렉트
 
 4. **기본 언어 적용**: 위 모든 방법으로 언어를 감지하지 못한 경우 기본 언어 사용
@@ -160,9 +168,11 @@ Route::localized(function () {
 1. **정확한 일치**: 완전히 동일한 언어 코드 확인 (예: `ko_KR` → `ko_KR`)
 
 2. **특별 매핑 확인**: `locale_mappings` 설정에 정의된 대체 가능 언어 확인
+
    - 예: `zh_HK`가 감지되었고 설정에 `'zh_HK' => 'zh_TW'`가 있으면 `zh_TW` 사용
 
 3. **기본 언어 코드 매칭**: 언어 코드의 기본 부분만 일치하는지 확인
+
    - 예: 브라우저에서 `zh`가 감지되면 `supported` 배열에서 처음 나오는 `zh_` 로케일 선택
    - 이때 배열 순서가 중요: `zh_CN`이 `zh_TW`보다 먼저 정의되면 `zh` → `zh_CN` 매핑
 
