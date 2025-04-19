@@ -71,24 +71,32 @@ return [
     |
     | 결과 URL 예시:
     | - /en/about      (영어)
-    | - /ko_KR/about   (한국어)
-    | - /zh_CN/about   (중국어)
-    | - /about        (기본 언어일 경우)
+    | - /ko/about      (한국어)
+    | - /zh-cn/about   (중국어 간체)
+    | - /zh-tw/about   (중국어 번체 대만)
+    | - /about         (기본 언어일 경우)
     |
     */
     'language' => [
         'enabled' => true,
+
+        // 접근한 페이지와 다른 언어 값으로 페이지를 접근했을 때 자동 이동할 것인지
+        'redirect_to_accept_language_enabled' => false,
+        'redirect_to_cookie_language_enabled' => true,
+
+        // 기본 언어, 언어 값이 없이 루트로 URL이 구성됨
         'default' => env('APP_LOCALE'),
+
         // 지원 언어 목록 (순서가 중요: 같은 기본 언어에 대해 먼저 나열된 항목이 우선순위가 높음)
         // 예: 'zh'를 감지하면 아래 순서대로 'zh_CN'이 'zh_TW'나 'zh_HK'보다 우선 적용됨
         'supported' => [
             'en',
-            'es_ES',
-            'zh_CN',  // 중국어 간체 우선
-            'zh_TW',  // 번체 (대만)
-            // 'zh_HK',  // 번체 (홍콩)
-            'ja_JP',
-            'ko_KR',
+            'es',
+            'zh-cn',  // 중국어 간체 우선
+            'zh-tw',  // 번체 (대만)
+            // 'zh-hk',  // 번체 (홍콩)
+            'ja',
+            'ko',
         ],
         'cookie' => [
             'name' => '_ol',
@@ -98,41 +106,8 @@ return [
         'locale_mappings' => [
             // 번체 중국어 상호 참조 (zh_HK와 zh_TW는 모두 번체 중국어라 서로 대체 가능)
             // 중국어 홍콩/대만 버전 차이점은 https://kargn.as/posts/differences-hong-kong-taiwan-chinese-website-ui-localisation 참고
-            'zh_HK' => 'zh_TW',
-            'zh_TW' => 'zh_HK',
-        ],
-    ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | Meta Tags Configuration
-    |--------------------------------------------------------------------------
-    */
-    'meta-tags' => [
-        'defaults' => [
-            'title' => Config::get('app.name', 'Laravel'),
-            'description' => '',
-            'keywords' => '',
-            'robots' => 'index,follow',
-            'viewport' => 'width=device-width, initial-scale=1',
-            'charset' => 'utf-8',
-        ],
-        'og' => [
-            'site_name' => Config::get('app.name', 'Laravel'),
-            'type' => 'website',
-            'image' => '/images/og-image.jpg',
-        ],
-        'twitter' => [
-            'card' => 'summary_large_image',
-            'site' => '@yoursite',
-            'creator' => '@yourname',
-        ],
-        'cache' => [
-            'enabled' => Config::get('app.meta_tags_cache_enabled', true),
-            'duration' => Config::get('app.meta_tags_cache_duration', 3600),
-        ],
-        'images' => [
-            'touch_icon' => '/apple-touch-icon.png',
+            'zh-hk' => 'zh-tw',
+            'zh-tw' => 'zh-hk',
         ],
     ],
 ];

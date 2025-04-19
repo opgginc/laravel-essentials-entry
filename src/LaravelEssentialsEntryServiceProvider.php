@@ -47,7 +47,7 @@ class LaravelEssentialsEntryServiceProvider extends ServiceProvider
         $this->app->bind('essentials-entry.json-ld', function () {
             return new \OPGG\LaravelEssentialsEntry\Schema\JsonLd('WebSite');
         });
-        
+
         // EssentialsEntry 서비스 등록
         $this->app->singleton('essentials-entry', function () {
             return new EssentialsEntry();
@@ -63,6 +63,9 @@ class LaravelEssentialsEntryServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__ . '/../config/essentials-entry.php' => $this->app->configPath('essentials-entry.php'),
         ], 'essentials-entry-config');
+
+        // 모든 설정에 대한 기본값 설정
+        $this->setDefaultOptions();
 
         // 사이트맵 라우트 등록
         $this->registerSitemapRoutes();
@@ -113,6 +116,25 @@ class LaravelEssentialsEntryServiceProvider extends ServiceProvider
 
         if (!empty($config['enabled']) && !empty($config['path_rewrite'])) {
             Route::get($config['path_rewrite'], [FaviconController::class, 'index']);
+        }
+    }
+
+    /**
+     * 모든 설정의 기본값 설정
+     */
+    private function setDefaultOptions(): void
+    {
+        $defaultOptions = [
+            // 2025.04.19
+            'language.redirect_to_accept_language_enabled' => false,
+            'language.redirect_to_cookie_language_enabled' => true,
+        ];
+
+        // 각 섹션별로 기본값 적용
+        foreach ($defaultOptions as $key => $value) {
+            if (!Config::has('essentials-entry.' . $key)) {
+                Config::set('essentials-entry.' . $key, $value);
+            }
         }
     }
 

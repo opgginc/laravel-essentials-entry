@@ -11,6 +11,7 @@ use CodeZero\LocalizedRoutes\Middleware\Detectors\CookieDetector;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use CodeZero\LocalizedRoutes\Middleware\LocaleHandler;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Route;
 use OPGG\LaravelEssentialsEntry\Support\LocaleMatcher;
 
@@ -43,6 +44,12 @@ class DetectLanguage
      */
     public function handle(Request $request, Closure $next)
     {
+        $config = Config::get('essentials-entry.language');
+        if (!$config['enabled']) {
+            \Log::warn('DetectLanguage middleware 가 호출되었지만, 언어 설정이 비활성화된 상태입니다. (essentials-entry.language.enabled = false)');
+            return $next($request);
+        }
+
         $pathLocale = $this->handler->detect();
 
         $browserLocale = $this->browserDetectedLanguage();
@@ -57,9 +64,22 @@ class DetectLanguage
             return $response;
         }
 
-        // 쿠키로 강제 지정 되어 있으면 리다이렉트
-        if ($cookieLocale && $cookieLocale !== $pathLocale) {
+        // 쿠키로 특정 언어가 강제 지정 되어 있으면 강제 리다이렉트
+        if (
+            $config['redirect_to_cookie_language_enabled']
+            && $cookieLocale
+            && $cookieLocale !== $pathLocale
+        ) {
             return redirect()->to(Route::localizedUrl($cookieLocale));
+        }
+
+        // 브라우저에서 지정된 언어가 기본 언어페이지가 아닌 경우, 강제로 이동
+        if (
+            $config['redirect_to_accept_language_enabled']
+            && $browserLocale
+            && $browserLocale !== $pathLocale
+        ) {
+            return redirect()->to(Route::localizedUrl($browserLocale));
         }
 
         // 기본 값

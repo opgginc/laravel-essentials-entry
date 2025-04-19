@@ -38,6 +38,14 @@ abstract class TestCase extends BaseTestCase
         $this->defineEnvironment(app());
     }
 
+    protected function setAcceptLanguage(string $locale)
+    {
+        $this->defaultHeaders['ACCEPT_LANGUAGE'] = $locale;
+        App::bind(BrowserLocale::class, function () use ($locale) {
+            return new BrowserLocale($locale);
+        });
+    }
+
     /**
      * 앱 로케일을 설정합니다.
      *
@@ -47,10 +55,6 @@ abstract class TestCase extends BaseTestCase
     protected function setAppLocale(string $locale): void
     {
         App::setLocale($locale);
-        $this->defaultHeaders['ACCEPT_LANGUAGE'] = $locale;
-        App::bind(BrowserLocale::class, function () use ($locale) {
-            return new BrowserLocale($locale);
-        });
     }
 
     protected function setCookieLocale(string $locale): void
@@ -79,6 +83,12 @@ abstract class TestCase extends BaseTestCase
     protected function setFallbackLocale(?string $locale): void
     {
         Config::set('essentials-entry.language.default', $locale);
+        LaravelEssentialsEntryServiceProvider::overrideLocalizationConfig();
+    }
+
+    protected function setLocaleMappings(array $mappings): void
+    {
+        Config::set('essentials-entry.language.locale_mappings', $mappings);
         LaravelEssentialsEntryServiceProvider::overrideLocalizationConfig();
     }
 
@@ -171,6 +181,17 @@ abstract class TestCase extends BaseTestCase
         // 기본 설정 파일 로드
         $config = require __DIR__ . '/../config/essentials-entry.php';
         $this->setConfigRecursive($config, 'essentials-entry');
+        LaravelEssentialsEntryServiceProvider::overrideLocalizationConfig();
+    }
+
+    protected function setRedirectOptions(bool $browser = null, bool $cookie = null): void
+    {
+        if ($browser !== null) {
+            Config::set('essentials-entry.language.redirect_to_accept_language_enabled', $browser);
+        }
+        if ($cookie !== null) {
+            Config::set('essentials-entry.language.redirect_to_cookie_language_enabled', $cookie);
+        }
         LaravelEssentialsEntryServiceProvider::overrideLocalizationConfig();
     }
 
