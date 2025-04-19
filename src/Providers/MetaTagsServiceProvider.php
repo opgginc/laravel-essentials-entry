@@ -54,6 +54,13 @@ class MetaTagsServiceProvider extends ServiceProvider
     protected function registerMeta(): void
     {
         $this->app->singleton(MetaInterface::class, function () {
+            // 번역 키 확인
+            $this->checkTranslationKey('seo.title');
+            $this->checkTranslationKey('seo.description');
+            $this->checkTranslationKey('seo.keywords');
+
+            Config::set('meta_tags.title.default', __('seo.title'));
+
             $meta = new Meta(
                 $this->app[ManagerInterface::class],
                 $this->app['config']
@@ -63,11 +70,6 @@ class MetaTagsServiceProvider extends ServiceProvider
             $metaConfig = Config::get('essentials-entry.meta-tags', []);
             $ogConfig = $metaConfig['og'] ?? [];
             $imagesConfig = $metaConfig['images'] ?? [];
-
-            // 번역 키 확인
-            $this->checkTranslationKey('seo.title');
-            $this->checkTranslationKey('seo.description');
-            $this->checkTranslationKey('seo.keywords');
 
             // 기본 태그 설정
             $meta->setTitle(__('seo.title'));
