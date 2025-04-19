@@ -13,7 +13,7 @@
         "butschster/meta-tags": "^3.0",
         "kargnas/laravel-ai-translator": "*",
         "spatie/laravel-sitemap": "^7.0",
-        "opgginc/codezero-laravel-localized-routes": "^5.0",
+        "opgginc/codezero-laravel-localized-routes": "^5.1",
         "annexare/countries-list": "^3.1",
         "nesbot/carbon": "^3.9"
     },
