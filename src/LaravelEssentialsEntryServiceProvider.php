@@ -31,7 +31,7 @@ class LaravelEssentialsEntryServiceProvider extends ServiceProvider
 
         // localized-routes.php 파일 존재 여부 확인
         if (file_exists(config_path('localized-routes.php'))) {
-            $this->app['log']->warning(
+            throw new \Exception(
                 "[OPGG Essentials Entry] localized-routes.php 파일이 존재합니다. " .
                 "essentials-entry 패키지의 언어 설정과 충돌을 방지하기 위해 해당 파일을 삭제해주세요."
             );
@@ -167,6 +167,7 @@ class LaravelEssentialsEntryServiceProvider extends ServiceProvider
                 // \CodeZero\LocalizedRoutes\Middleware\Detectors\BrowserDetector::class,
                 \CodeZero\LocalizedRoutes\Middleware\Detectors\AppDetector::class, //=> required
             ]);
+            Config::set('localized-routes.check_raw_cookie', true);
             Config::set('localized-routes.cookie_name', $config['cookie']['name']);
             Config::set('localized-routes.cookie_minutes', $config['cookie']['minutes']);
             Config::set('localized-routes.stores', [
