@@ -43,4 +43,4 @@ jobs:
         continue-on-error: true
 
       - name: Execute tests
-        run: composer test
+        run: composer test tests
