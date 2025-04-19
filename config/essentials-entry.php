@@ -5,14 +5,32 @@ return [
     |--------------------------------------------------------------------------
     | Favicon Configuration
     |--------------------------------------------------------------------------
+    | enabled 를 true 로 설정하면 아래 Meta Tag 설정으로 자동으로 favicon 이 삽입됩니다.
     */
     'favicon' => [
         'enabled' => true,
-        'source_path' => null, // null이면 패키지 내부 파비콘 사용
+        'source_path' => null, // null이면 op.gg 파란색 기본 파비콘 사용
         'path_rewrite' => 'favicon.ico',
         'cache' => [
             'enabled' => true,
             'duration' => 31536000, // 1년
+        ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Meta Tags Configuration
+    |--------------------------------------------------------------------------
+    | app.blade.php 에서 <title>Laravel</title> 대신 {!! Meta::toHtml() !!}를 하면
+    | 메타 태그가 자동으로 들어갑니다.
+    */
+    'meta-tags' => [
+        'og' => [
+            'type' => 'website',
+            'image' => 'https://s-lol-web.op.gg/images/reverse.rectangle.png',
+        ],
+        'images' => [
+            'touch_icon' => '/apple-touch-icon.png',
         ],
     ],
 

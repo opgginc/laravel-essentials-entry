@@ -26,7 +26,109 @@ php artisan vendor:publish --tag=essentials-entry-config
 
 ## 기능
 
-### 1. 사이트맵 생성
+### 1. 메타 태그 관리
+
+이 패키지는 [butschster/meta-tags](https://github.com/butschster/LaravelMetaTags) 패키지를 기반으로 하여 SEO를 위한 메타 태그를 자동으로 관리합니다. 설정된 내용에 따라 사이트 전체에 필요한 메타 태그가 자동으로 적용됩니다.
+
+#### 설정
+
+`config/essentials-entry.php` 파일에서 메타 태그 설정을 변경할 수 있습니다:
+
+```php
+'meta-tags' => [
+    'og' => [
+        'type' => 'website',
+        'image' => 'https://s-lol-web.op.gg/images/reverse.rectangle.png',
+    ],
+    'images' => [
+        'touch_icon' => '/apple-touch-icon.png',
+    ],
+],
+```
+
+#### 다국어 지원
+
+메타 태그 텍스트는 다국어 파일에서 가져옵니다. 각 언어 폴더에 `seo.php` 파일을 생성하고 다음과 같이 구성하세요:
+
+```php
+// lang/ko/seo.php
+return [
+    'title' => '사이트 제목',
+    'description' => '사이트 설명',
+    'keywords' => '키워드1, 키워드2, 키워드3',
+];
+```
+
+#### 사용 방법
+
+블레이드 템플릿의 `<head>` 섹션에 다음 코드를 추가하세요:
+
+```php
+{!! Meta::toHtml() !!}
+```
+
+기존 `<title>Laravel</title>` 태그 대신 위 코드를 사용하면 다음과 같은 메타 태그가 자동으로 생성됩니다:
+
+```html
+<title>Laravel</title>
+<script>
+  window.appTitle = "seo.title";
+  window.locale = "en";
+  window.baseUrl = "http://127.0.0.1:8000";
+</script>
+<link rel="icon" type="image/x-icon" href="favicon.ico" />
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+<meta name="description" content="seo.description" />
+<meta name="keywords" content="seo.keywords" />
+<link
+  rel="sitemap"
+  type="application/xml"
+  title="Sitemap"
+  href="http://127.0.0.1:8000/sitemap.xml"
+/>
+<link rel="canonical" href="http://127.0.0.1:8000/about" />
+<link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/about" />
+<link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/about" />
+<link rel="alternate" hreflang="es" href="http://127.0.0.1:8000/es/about" />
+<link rel="alternate" hreflang="ja" href="http://127.0.0.1:8000/ja/about" />
+<link rel="alternate" hreflang="ko" href="http://127.0.0.1:8000/ko/about" />
+<link
+  rel="alternate"
+  hreflang="zh-cn"
+  href="http://127.0.0.1:8000/zh-cn/about"
+/>
+<link
+  rel="alternate"
+  hreflang="zh-tw"
+  href="http://127.0.0.1:8000/zh-tw/about"
+/>
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="seo.title" />
+<meta property="og:locale" content="en" />
+<meta
+  property="og:image"
+  content="https://s-lol-web.op.gg/images/reverse.rectangle.png"
+/>
+<meta property="og:locale:alternate" content="en" />
+<meta property="og:locale:alternate" content="es" />
+<meta property="og:locale:alternate" content="ja" />
+<meta property="og:locale:alternate" content="ko" />
+<meta property="og:locale:alternate" content="zh-cn" />
+<meta property="og:locale:alternate" content="zh-tw" />
+<meta property="og:url" content="http://127.0.0.1:8000/about" />
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+```
+
+#### Inertia.js와 함께 사용하기
+
+Inertia.js를 사용하는 경우 다음과 같이 설정하여 함께 사용할 수 있습니다:
+
+```php
+{!! preg_replace('/<title>(.*?)<\/title>/', '<title inertia>$1</title>', Meta::toHtml()) !!}
+```
+
+### 2. 사이트맵 생성
 
 이 패키지를 설치하면 자동으로 사이트맵을 생성하고 스케줄링됩니다. 단, 어떻게 사이트맵을 생성할 것인지 설정 파일에서 잘 설정해주어야합니다.
 
@@ -230,7 +332,7 @@ composer test
 
 다음 기능들은 향후 구현 예정입니다:
 
-- 메타 태그 관리: Inertia.js와 통합된 메타 태그 관리 기능
+- ✅ 메타 태그 관리: SEO 및 소셜 미디어를 위한 메타 태그 자동 관리 (완료)
 - JSON-LD 스키마 지원: 구조화된 데이터를 위한 JSON-LD 스키마 추가
 - 변경한 언어코드를 위한 리다이렉트 기능
 
